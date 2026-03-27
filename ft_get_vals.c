@@ -12,6 +12,49 @@
 
 #include "fdf.h"
 
+static void	fail_map_parse(t_data *data, char ***map_vals, char *msg)
+{
+	if (map_vals)
+		ft_free_char3(map_vals);
+	ft_printf("%s\n", msg);
+	close_win(data, 1);
+}
+
+static int	is_hex_char(char c)
+{
+	return ((c >= '0' && c <= '9')
+		|| (c >= 'a' && c <= 'f')
+		|| (c >= 'A' && c <= 'F'));
+}
+
+static int	is_valid_height_token(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || !str[0])
+		return (0);
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!ft_isdigit(str[i]))
+		return (0);
+	while (ft_isdigit(str[i]))
+		i++;
+	if (!str[i])
+		return (1);
+	if (str[i] != ',')
+		return (0);
+	i++;
+	if (!(str[i] == '0' && (str[i + 1] == 'x' || str[i + 1] == 'X')))
+		return (0);
+	i += 2;
+	if (!is_hex_char(str[i]))
+		return (0);
+	while (is_hex_char(str[i]))
+		i++;
+	return (str[i] == '\0');
+}
+
 char	**ft_get_map_lines(int map_fd)
 {
 	char	*gnl_ret;
@@ -65,13 +108,28 @@ void	char_arr_len(char ***map_vals, t_data *data)
 {
 	int	i;
 	int	j;
+	int	row_len;
 
+	if (!map_vals || !map_vals[0] || !map_vals[0][0])
+		fail_map_parse(data, map_vals, "Invalid map: empty or malformed");
 	i = 0;
 	j = 0;
 	while (map_vals[i])
 		i++;
 	while (map_vals[0][j])
 		j++;
+	if (j <= 0)
+		fail_map_parse(data, map_vals, "Invalid map: empty first row");
+	i = 0;
+	while (map_vals[i])
+	{
+		row_len = 0;
+		while (map_vals[i][row_len])
+			row_len++;
+		if (row_len != j)
+			fail_map_parse(data, map_vals, "Invalid map: non-rectangular rows");
+		i++;
+	}
 	data->size = i * j;
 	data->r = i;
 	data->c = j;
@@ -92,6 +150,8 @@ void	ft_get_coords(char ***map_vals, t_data *data)
 		j = 0;
 		while (map_vals[i][j])
 		{
+			if (!is_valid_height_token(map_vals[i][j]))
+				fail_map_parse(data, map_vals, "Invalid map: bad height token");
 			data->todi[count].x = (double)j;
 			data->todi[count].y = (double)i;
 			data->todi[count].z = (double)ft_atoi(map_vals[i][j]);
@@ -106,6 +166,8 @@ void	ft_get_coords(char ***map_vals, t_data *data)
 void	ft_get_map(char *map_path, t_data *data)
 {
 	int	map_fd;
+	char	**map_lines;
+	char	***map_vals;
 
 	map_fd = open(map_path, O_RDONLY);
 	if (map_fd < 0)
@@ -118,5 +180,12 @@ void	ft_get_map(char *map_path, t_data *data)
 		close_win(data, 1);
 		exit (EXIT_FAILURE);
 	}
-	ft_get_coords(ft_mapline_tostr(ft_get_map_lines(map_fd)), data);
+	map_lines = ft_get_map_lines(map_fd);
+	close(map_fd);
+	if (!map_lines)
+		fail_map_parse(data, NULL, "Invalid map: empty file or read failure");
+	map_vals = ft_mapline_tostr(map_lines);
+	if (!map_vals)
+		fail_map_parse(data, NULL, "Invalid map: allocation failure");
+	ft_get_coords(map_vals, data);
 }

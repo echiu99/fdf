@@ -1,0 +1,7 @@
+# Build outputs
+fdf
+*.o
+libft/libft.a
+
+# Editor / OS
+.DS_Store

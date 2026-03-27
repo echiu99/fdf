@@ -1,83 +1,82 @@
 # FDF: Wireframe Model
 
-Welcome to FDF, a project where I coded a 3D wireframe renderer entirely from scratch in C. This program transforms a grid of coordinates into a 3D isometric visualization, showcasing landscapes or other shapes in a clean, interactive window. The project was built using the MiniLibX, a lightweight graphical library, and demonstrates core concepts of graphics programming, including rendering, projections, and interactive user controls.
+A 3D wireframe renderer in C: it reads `.fdf` height maps, projects them in isometric view, and draws the mesh with anti-aliased lines and a height-based color gradient.
 
-## Features:
-- Parses .fdf files containing 3D point data and visualizes them as wireframe models.
-- Implements isometric projection for a clear and realistic 3D effect.
-- Displays the rendered model in a smooth, interactive window.
-- Supports clean exit functionality via keypress or window close button.
+## Features
 
-## Installation:
-1. Clone the repository:
+- Parses `.fdf` grids (integers per cell; optional `height,0xRRGGBB` color suffix validated on load).
+- Isometric-style projection and interactive window.
+- **Xiaolin Wu** line drawing for smoother edges.
+- **Height gradient**: low altitude → purple, high → blue (per-edge interpolation).
+- **Cross-platform build**: Linux uses **MiniLibX** (`mlx_linux`); macOS uses **MLX42** (`mlx_macos`) with GLFW.
+- Map validation: rectangular grids, sensible error messages on bad input.
+- Full-frame clear before first draw so the background is solid (no grey “empty” pixels on macOS).
 
+## Prerequisites
+
+The `Makefile` expects MLX next to this repo:
+
+- `../mlx_linux` — Linux MiniLibX (with `libmlx` and X11 dev packages).
+- `../mlx_macos` — MLX42 clone with a built static library at `build/libmlx42.a` (see that project’s README).
+
+**macOS additionally:** install GLFW so the linker can find it, for example:
+
+```bash
+brew install glfw
 ```
-git clone https://github.com/your-username/fdf.git  
-cd fdf  
+
+The Makefile uses `-L/opt/homebrew/lib` and `-L/usr/local/lib` for `libglfw`.
+
+## Build
+
+```bash
+cd fdf
+make
 ```
-2. Compile the program using the provided Makefile:
+
+Use `make re` for a clean rebuild.
+
+## Usage
+
+```bash
+./fdf path/to/map.fdf
 ```
-make  
+
+Bundled examples:
+
+```bash
+./fdf maps/42.fdf      # classic 42 subject map (digits “42” in height)
+./fdf maps/pyramid.fdf
+./fdf maps/waves.fdf
 ```
 
-## Usage:
-The program takes an .fdf file as input, which contains a grid of integers. Each number represents a point in 3D space:
+Each row is a line of space-separated values; row length must be consistent. The file’s horizontal index is X, line number is Y, and the value is Z (altitude).
 
-- The horizontal position corresponds to the X-axis.
-- The vertical position corresponds to the Y-axis.
-- The value represents the Z-axis (altitude).
+## Controls
 
-Example of a valid .fdf file:
-```
-0  0  0  0  0  
-0 10 10 10  0  
-0 10 20 10  0  
-0  0 10  0  0  
-```
-Run the program:
-```
-./fdf example.fdf  
-```
-When you run the program, it opens a window that renders the 3D wireframe model based on the .fdf file's data.
+| Input | Action |
+|--------|--------|
+| **W** / **A** / **S** / **D** | Pan the model (up / left / down / right). |
+| **↑** / **↓** (arrow keys) | Zoom in / out around the **center** of the window (×2 / ÷2). |
+| **Mouse wheel** | Zoom in / out toward the **cursor** (step ≈ 1.1× per notch). On Linux this uses X11 wheel buttons **4** (up) and **5** (down) via `mlx_mouse_hook`. |
+| **Escape** | Quit. |
+| **Window close** | Quit. |
 
-## Key Features
-- Graphics Rendering: I implemented a custom rendering engine that calculates and draws the isometric projection of the points.
-- Smooth Interaction: The window remains responsive, allowing for smooth interactions like minimizing or switching windows.
-- Clean Exit:
-  - Press ESC to close the window and quit the program.
-  - Alternatively, click the close button on the window frame.
-- Memory Safety: All dynamically allocated memory is carefully managed to prevent leaks or crashes.
+## Technical notes
 
-## Bonus Features:
-In addition to the core functionality, I included several enhancements to make the program more interactive and visually appealing:
-- Zoom and Translation: Allow zooming in and out of the model, as well as moving it around the window.
-- Custom Enhancements: I have implemented my own custom enhancement which I implement after I submitted the project. Instead of using Bresenham's line algorithm which is functional but the lines don't always look smooth, I have instead implemented Xiaolin Wu's line algorithm which renders lines that look smoother. I am still currently changing the code so it still needs some tweaking.
+- **Languages / libs:** C, custom **libft**, `-lm`, platform MLX as above.
+- **macOS pixels:** MLX42 uses **RGBA** byte order in the image buffer; the renderer writes R,G,B,A explicitly so colors and clears match OpenGL.
+- **Parsing:** Uses libft (`get_next_line`, `split`, etc.) with checks for empty maps, bad tokens, and non-rectangular rows.
 
-## Technical Details:
-- Languages: Written entirely in C.
-- Libraries Used:
-  - MiniLibX: For graphics rendering.
-  - Math Library (-lm): For trigonometric and mathematical calculations.
-- File Parsing: I used custom functions, including those from my libft, to efficiently parse .fdf files and handle edge cases.
-- Error Handling: The program gracefully handles invalid files and unexpected input.
+## Future ideas
 
-## Challenges
-Building this project taught me a lot about computer graphics, especially:
-- How to represent 3D objects in 2D space.
-- The math behind isometric projections.
-- Efficiently parsing and managing data for rendering.
-- Using graphical libraries like MiniLibX for window management and rendering.
+- Interactive rotation (e.g. mouse drag or keys).
+- Other projections, optional flat shading, reload map without restart.
 
-## Future Improvements
-- Alternative Projections: Parallel and conic projections for different visualization styles.
-- Rotation: Rotate the model to view it from different angles.
-- Implement shading or lighting for a more realistic 3D effect.
-- Add support for dynamically loading new .fdf files without restarting the program.
-- Explore additional interaction options, like mouse-based controls.
+## Context
 
+Project developed in the context of **42** school graphics introduction (FDF / fil de fer).
 
-## About This Project
-I developed FDF as part of my journey to learn graphics programming. It represents a significant step forward in understanding how to visualize data in 3D and manage real-time rendering. Every part of this project, from parsing .fdf files to handling graphics in the MiniLibX library, was coded by me, ensuring a deep understanding of the underlying concepts.
+## Acknowledgments
 
-## Acknowledgments:
-This project is part of the 42 curriculum and serves as an introduction to computer graphics programming. It is a stepping stone to more advanced graphical projects.
+Thanks to the 42 curriculum and the MiniLibX / MLX42 ecosystems used for windowing and drawing.

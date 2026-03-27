@@ -12,19 +12,37 @@
 
 #include "fdf.h"
 
+void	ft_compute_z_range(t_data *data)
+{
+	unsigned int	i;
+	double			zmin;
+	double			zmax;
+
+	zmin = data->todi[0].z;
+	zmax = data->todi[0].z;
+	i = 1;
+	while (i < data->size)
+	{
+		if (data->todi[i].z < zmin)
+			zmin = data->todi[i].z;
+		if (data->todi[i].z > zmax)
+			zmax = data->todi[i].z;
+		i++;
+	}
+	if (zmax == zmin)
+		zmax = zmin + 1.0;
+	data->z_min = zmin;
+	data->z_max = zmax;
+}
+
 int	ft_strslen(char **map_lines)
 {
 	int	i;
-	int	len;
 
 	i = 0;
-	len = 0;
 	while (map_lines[i])
-	{
-		len += ft_strlen(map_lines[i]);
 		i++;
-	}
-	return (len);
+	return (i);
 }
 
 void	ft_free_char2(char **tofree)

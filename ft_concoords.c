@@ -56,56 +56,34 @@ void	ft_real_coords(t_data *data)
 	return ;
 }
 
-void	scale_down(t_data *data)
+/*
+ * Scale screen-space coords about (mx, my). factor > 1 zooms in, < 1 zooms out.
+ * Same math as the old scale_up/scale_down when (mx,my) is window center.
+ */
+void	ft_zoom_at(t_data *data, int mx, int my, double factor)
 {
-	int	x;
-	int	y;
 	int	count;
 
-	y = -1;
 	count = 0;
-	while (count < (int) data->size)
+	while (count < (int)data->size)
 	{
-		data->tredi[count].x /= 2;
-		data->tredi[count].x += ((data->w / 2) / 2);
-		data->tredi[count].y /= 2;
-		data->tredi[count].y += ((data->h / 2) / 2);
+		data->tredi[count].x = mx + (data->tredi[count].x - (double)mx) * factor;
+		data->tredi[count].y = my + (data->tredi[count].y - (double)my) * factor;
 		count++;
 	}
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
+	ft_clear_img(data);
 	ft_placelines(data);
+#ifndef __APPLE__
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
-	return ;
+#endif
+}
+
+void	scale_down(t_data *data)
+{
+	ft_zoom_at(data, data->w / 2, data->h / 2, 0.5);
 }
 
 void	scale_up(t_data *data)
 {
-	int	x;
-	int	y;
-	int	count;
-
-	y = -1;
-	count = 0;
-	while (count < (int)data->size)
-	{
-		data->tredi[count].x *= 2;
-		data->tredi[count].x -= (data->w / 2);
-		data->tredi[count].y *= 2;
-		data->tredi[count].y -= (data->h / 2);
-		count++;
-	}
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
-	ft_placelines(data);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
-	return ;
+	ft_zoom_at(data, data->w / 2, data->h / 2, 2.0);
 }

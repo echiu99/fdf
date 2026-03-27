@@ -13,11 +13,28 @@
 #ifndef FDF_H
 # define FDF_H
 
-# include "../mlx_linux/mlx.h"
-# include "../mlx_linux/mlx_int.h"
+# ifdef __APPLE__
+#  include <MLX42/MLX42.h>
+# else
+#  include <mlx.h>
+# endif
 # include "./libft/libft.h"
 # include <math.h>
 # include <errno.h>
+# include <fcntl.h>
+# ifndef __APPLE__
+#  include <X11/keysym.h>
+# endif
+
+/*
+ * MLX42 (macOS) uses 0xRRGGBBAA per channel (see mlx_draw_pixel).
+ * Clearing with alpha 0 is fully transparent — use opaque black for erase.
+ */
+# ifdef __APPLE__
+#  define FDF_COLOR_CLEAR 0x000000FF
+# else
+#  define FDF_COLOR_CLEAR 0x00000000
+# endif
 
 typedef struct s_coords
 {
@@ -37,6 +54,8 @@ typedef struct s_data
 	unsigned int	m;
 	unsigned int	size;
 	double			scale;
+	double			z_min;
+	double			z_max;
 	t_coords		*todi;
 	t_coords		*tredi;
 	void			*mlx_ptr;
@@ -63,6 +82,7 @@ void	scale_up(t_data *data);
 void	ft_newwin(t_data *data);
 void	ft_newimg(t_data *data);
 void	scale_down(t_data *data);
+void	ft_zoom_at(t_data *data, int mx, int my, double factor);
 void	translate_up(t_data *data);
 void	init_mlxdata(t_data *data);
 void	ft_concoords(t_data *data);
@@ -76,6 +96,8 @@ void	ft_free_char3(char ***tofree);
 void	ft_putline(t_data *data, int i, int j);
 void	ft_get_map(char *map_path, t_data *data);
 void	init_mapdata(t_data *data, char *map_path);
+void	ft_compute_z_range(t_data *data);
+void	ft_clear_img(t_data *data);
 void	put_pixel_img(t_data *data, int x, int y, int color);
 int		ft_abs(int x);
 int		close_event(t_data *data);

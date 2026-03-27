@@ -4,9 +4,19 @@ LIBFT_D = ./libft
 
 LIBFT = $(LIBFT_D)/libft.a
 
-LIBMLX_D = ../mlx_linux
+UNAME_S := $(shell uname -s)
 
-LFLAGS = -L$(LIBMLX_D) -Imlx_linux -lmlx -lbsd -lXext -lX11 -lm -lz
+ifeq ($(UNAME_S),Darwin)
+LIBMLX_D = ../mlx_macos
+MLX_INC = -I$(LIBMLX_D)/include
+LFLAGS = $(LIBMLX_D)/build/libmlx42.a \
+	-L/opt/homebrew/lib -L/usr/local/lib -lglfw \
+	-framework Cocoa -framework OpenGL -framework IOKit -lm
+else
+LIBMLX_D = ../mlx_linux
+MLX_INC = -I$(LIBMLX_D)
+LFLAGS = -L$(LIBMLX_D) -lmlx -lbsd -lXext -lX11 -lm -lz
+endif
 
 SRC = fdf_utils.c \
       ft_create_win.c \
@@ -18,14 +28,14 @@ SRC = fdf_utils.c \
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g $(MLX_INC)
 
 CC = cc
 
 all: $(LIBFT) $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(LFLAGS) $(OBJ) ../mlx_linux/*.a ./libft/libft.a -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LFLAGS) -o $(NAME)
 
 clean:
 	@make clean -s -C $(LIBFT_D)

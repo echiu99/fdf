@@ -14,17 +14,9 @@
 
 void	translate_left(t_data *data)
 {
-	int	x;
-	int	y;
 	int	count;
 
-	y = -1;
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
+	ft_clear_img(data);
 	count = 0;
 	while (count < (int)data->size)
 	{
@@ -32,23 +24,17 @@ void	translate_left(t_data *data)
 		count++;
 	}
 	ft_placelines(data);
+#ifndef __APPLE__
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
+#endif
 	return ;
 }
 
 void	translate_right(t_data *data)
 {
-	int	x;
-	int	y;
 	int	count;
 
-	y = -1;
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
+	ft_clear_img(data);
 	count = 0;
 	while (count < (int)data->size)
 	{
@@ -56,23 +42,17 @@ void	translate_right(t_data *data)
 		count++;
 	}
 	ft_placelines(data);
+#ifndef __APPLE__
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
+#endif
 	return ;
 }
 
 void	translate_up(t_data *data)
 {
-	int	x;
-	int	y;
 	int	count;
 
-	y = -1;
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
+	ft_clear_img(data);
 	count = 0;
 	while (count < (int)data->size)
 	{
@@ -80,23 +60,17 @@ void	translate_up(t_data *data)
 		count++;
 	}
 	ft_placelines(data);
+#ifndef __APPLE__
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
+#endif
 	return ;
 }
 
 void	translate_down(t_data *data)
 {
-	int	x;
-	int	y;
 	int	count;
 
-	y = -1;
-	while (y++ < data->h)
-	{
-		x = -1;
-		while (x++ < data->w)
-			put_pixel_img(data, x, y, 0x00000000);
-	}
+	ft_clear_img(data);
 	count = 0;
 	while (count < (int)data->size)
 	{
@@ -104,6 +78,8 @@ void	translate_down(t_data *data)
 		count++;
 	}
 	ft_placelines(data);
+#ifndef __APPLE__
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
+#endif
 	return ;
 }
