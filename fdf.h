@@ -104,7 +104,6 @@ typedef struct s_data
 	void			*mlx_ptr;
 	void			*win_ptr;
 	void			*img_ptr;
-	void			*hud_img;
 	char			*addr;
 	char			*map_path;
 	char			**map_names;
@@ -198,6 +197,8 @@ char	*ft_resolve_map_arg(char *arg);
 int		ft_switch_map(t_data *data, char *path);
 void	ft_hud_clear(t_data *data);
 void	ft_draw_hud(t_data *data);
+void	ft_hud_putchar(t_data *data, int x, int y, char c);
+void	ft_hud_putstr(t_data *data, int x, int y, char *s);
 void	ft_free_runtime(t_data *data);
 
 # ifdef __APPLE__

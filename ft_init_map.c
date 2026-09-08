@@ -14,7 +14,6 @@
 
 static void	ft_init_cmd_state(t_data *data)
 {
-	data->hud_img = NULL;
 	data->cmd_mode = 0;
 	data->cmd_len = 0;
 	data->cmd_buf[0] = '\0';

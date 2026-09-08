@@ -32,7 +32,6 @@ void	ft_maps_free(t_data *data)
 
 void	ft_free_runtime(t_data *data)
 {
-	ft_hud_clear(data);
 	ft_maps_free(data);
 	free(data->map_path);
 	data->map_path = NULL;
