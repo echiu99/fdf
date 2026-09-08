@@ -1,41 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_translate.c                                     :+:      :+:    :+:   */
+/*   ft_put_img.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/23 01:36:07 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 16:40:00 by echiu            ###   ########.fr       */
+/*   Created: 2026/03/27 16:50:00 by echiu             #+#    #+#             */
+/*   Updated: 2026/03/27 16:50:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	translate_left(t_data *data)
+#ifndef __APPLE__
+
+void	ft_put_img(t_data *data)
 {
-	data->off_x -= FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
 }
 
-void	translate_right(t_data *data)
+#else
+
+void	ft_put_img(t_data *data)
 {
-	data->off_x += FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	(void)data;
 }
 
-void	translate_up(t_data *data)
-{
-	data->off_y -= FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
-}
-
-void	translate_down(t_data *data)
-{
-	data->off_y += FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
-}
+#endif

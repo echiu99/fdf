@@ -12,19 +12,32 @@ MLX_INC = -I$(LIBMLX_D)/include
 LFLAGS = $(LIBMLX_D)/build/libmlx42.a \
 	-L/opt/homebrew/lib -L/usr/local/lib -lglfw \
 	-framework Cocoa -framework OpenGL -framework IOKit -lm
+PLATFORM_SRC = ft_hooks_mac.c ft_setup_mac.c ft_win_mac.c ft_pixel_mac.c
 else
 LIBMLX_D = ../mlx_linux
 MLX_INC = -I$(LIBMLX_D)
 LFLAGS = -L$(LIBMLX_D) -lmlx -lbsd -lXext -lX11 -lm -lz
+PLATFORM_SRC = ft_hooks_linux.c ft_setup_linux.c ft_win_linux.c ft_pixel_linux.c
 endif
 
 SRC = fdf_utils.c \
       ft_create_win.c \
       ft_fdf.c \
       ft_get_vals.c \
-      ft_putline.c \
-      ft_concoords.c \
-      ft_translate.c
+      ft_map_valid.c \
+      ft_map_read.c \
+      ft_clear.c \
+      ft_color.c \
+      ft_plot.c \
+      ft_wu_math.c \
+      ft_wu_line.c \
+      ft_placelines.c \
+      ft_project.c \
+      ft_view_ctrl.c \
+      ft_zoom.c \
+      ft_put_img.c \
+      ft_translate.c \
+      $(PLATFORM_SRC)
 
 OBJ = $(SRC:.c=.o)
 

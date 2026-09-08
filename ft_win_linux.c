@@ -1,0 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_win_linux.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/27 17:00:00 by echiu             #+#    #+#             */
+/*   Updated: 2026/03/27 17:00:00 by echiu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "fdf.h"
+
+void	ft_destroy_mlx(t_data *data)
+{
+	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	mlx_destroy_image(data->mlx_ptr, data->img_ptr);
+	mlx_destroy_display(data->mlx_ptr);
+	free(data->mlx_ptr);
+}
+
+void	ft_init_window(t_data *data)
+{
+	data->mlx_ptr = mlx_init();
+	data->win_ptr = mlx_new_window(data->mlx_ptr, data->w, data->h, "FDF");
+}
+
+void	ft_init_image(t_data *data)
+{
+	data->img_ptr = mlx_new_image(data->mlx_ptr, data->w, data->h);
+	data->addr = mlx_get_data_addr(data->img_ptr, &(data->bpp),
+			&(data->line_len), &(data->endian));
+}

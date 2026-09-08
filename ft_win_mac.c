@@ -1,60 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create_win.c                                    :+:      :+:    :+:   */
+/*   ft_win_mac.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/11 00:08:14 by echiu             #+#    #+#             */
+/*   Created: 2026/03/27 17:00:00 by echiu             #+#    #+#             */
 /*   Updated: 2026/03/27 17:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	close_win(t_data *data, int i)
+void	ft_destroy_mlx(t_data *data)
 {
-	ft_destroy_mlx(data);
-	if (i == 0)
-	{
-		free(data->todi);
-		free(data->tredi);
-		exit(EXIT_SUCCESS);
-	}
-	exit(EXIT_FAILURE);
+	mlx_delete_image((mlx_t *)data->mlx_ptr, (mlx_image_t *)data->img_ptr);
+	mlx_terminate((mlx_t *)data->mlx_ptr);
 }
 
-void	ft_newwin(t_data *data)
+void	ft_init_window(t_data *data)
 {
-	data->w = 1920;
-	data->h = 1080;
-	data->color = 0xFFFFFFFF;
-	ft_init_window(data);
+	data->mlx_ptr = mlx_init(data->w, data->h, "FDF", false);
+	data->win_ptr = data->mlx_ptr;
 }
 
-void	ft_newimg(t_data *data)
+void	ft_init_image(t_data *data)
 {
-	data->dx = 0;
-	data->dy = 0;
-	data->low = 0;
-	data->xhigh = 0;
-	data->yhigh = 0;
-	ft_init_image(data);
-}
-
-void	init_mlxdata(t_data *data)
-{
-	data->h = 0;
-	data->w = 0;
-	data->bpp = 0;
+	data->img_ptr = mlx_new_image((mlx_t *)data->mlx_ptr, data->w, data->h);
+	data->addr = (char *)((mlx_image_t *)data->img_ptr)->pixels;
+	data->bpp = 32;
+	data->line_len = data->w * 4;
 	data->endian = 0;
-	data->line_len = 0;
-	ft_newwin(data);
-	ft_newimg(data);
-}
-
-int	close_event(t_data *data)
-{
-	close_win(data, 0);
-	return (0);
+	mlx_image_to_window((mlx_t *)data->mlx_ptr,
+		(mlx_image_t *)data->img_ptr, 0, 0);
 }

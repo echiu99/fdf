@@ -1,41 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_translate.c                                     :+:      :+:    :+:   */
+/*   ft_wu_math.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/23 01:36:07 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 16:40:00 by echiu            ###   ########.fr       */
+/*   Created: 2026/03/27 17:05:00 by echiu             #+#    #+#             */
+/*   Updated: 2026/03/27 17:05:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	translate_left(t_data *data)
+int	ft_wu_ipart(double x)
 {
-	data->off_x -= FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	return ((int)floor(x));
 }
 
-void	translate_right(t_data *data)
+double	ft_wu_round(double x)
 {
-	data->off_x += FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	return (floor(x + 0.5));
 }
 
-void	translate_up(t_data *data)
+double	ft_wu_fpart(double x)
 {
-	data->off_y -= FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	return (x - floor(x));
 }
 
-void	translate_down(t_data *data)
+double	ft_wu_rfpart(double x)
 {
-	data->off_y += FDF_PAN_STEP;
-	ft_rebuild_view(data);
-	ft_redraw(data);
+	return (1.0 - ft_wu_fpart(x));
+}
+
+void	ft_wu_swap(double *a, double *b)
+{
+	double	tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
 }

@@ -9,6 +9,8 @@ A 3D wireframe renderer in C: it reads `.fdf` height maps, projects them in isom
 - **Xiaolin Wu** line drawing for smoother edges.
 - **Height gradient**: low altitude → purple, high → blue (per-edge interpolation).
 - **Cross-platform build**: Linux uses **MiniLibX** (`mlx_linux`); macOS uses **MLX42** (`mlx_macos`) with GLFW.
+- **Rotation**: horizontal (yaw) and vertical (pitch) from original map coords.
+- **Reset view** (`R`) plus zoom clamps so the model stays usable while testing.
 - Map validation: rectangular grids, sensible error messages on bad input.
 - Full-frame clear before first draw so the background is solid (no grey “empty” pixels on macOS).
 
@@ -48,6 +50,7 @@ Bundled examples:
 ./fdf maps/42.fdf      # classic 42 subject map (digits “42” in height)
 ./fdf maps/pyramid.fdf
 ./fdf maps/waves.fdf
+./fdf maps/mars.fdf
 ```
 
 Each row is a line of space-separated values; row length must be consistent. The file’s horizontal index is X, line number is Y, and the value is Z (altitude).
@@ -57,8 +60,11 @@ Each row is a line of space-separated values; row length must be consistent. The
 | Input | Action |
 |--------|--------|
 | **W** / **A** / **S** / **D** | Pan the model (up / left / down / right). |
-| **↑** / **↓** (arrow keys) | Zoom in / out around the **center** of the window (×2 / ÷2). |
-| **Mouse wheel** | Zoom in / out toward the **cursor** (step ≈ 1.1× per notch). On Linux this uses X11 wheel buttons **4** (up) and **5** (down) via `mlx_mouse_hook`. |
+| **←** / **→** | Rotate horizontally (yaw). |
+| **Q** / **E** | Rotate vertically (pitch). |
+| **↑** / **↓** | Zoom in / out around the **center** of the window (×2 / ÷2). |
+| **Mouse wheel** | Zoom in / out toward the **cursor** (~1.1× per notch; clamped). On Linux: wheel buttons **4** / **5**. |
+| **R** | Reset view (angles, zoom, and position). |
 | **Escape** | Quit. |
 | **Window close** | Quit. |
 
@@ -70,7 +76,7 @@ Each row is a line of space-separated values; row length must be consistent. The
 
 ## Future ideas
 
-- Interactive rotation (e.g. mouse drag or keys).
+- Mouse-drag rotation.
 - Other projections, optional flat shading, reload map without restart.
 
 ## Context
