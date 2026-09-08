@@ -6,7 +6,7 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 00:08:14 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:50:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int	close_win(t_data *data, int i)
 
 void	ft_newwin(t_data *data)
 {
-	data->w = 1920;
-	data->h = 1080;
+	data->w = FDF_WIN_W;
+	data->h = FDF_WIN_H;
 	data->color = 0xFFFFFFFF;
 	ft_init_window(data);
 }
