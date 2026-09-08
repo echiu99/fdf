@@ -6,13 +6,13 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 18:44:21 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 17:25:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-static void	check_rows(char ***map_vals, t_data *data, int cols)
+static int	check_rows(char ***map_vals, int cols)
 {
 	int	i;
 	int	row_len;
@@ -24,41 +24,40 @@ static void	check_rows(char ***map_vals, t_data *data, int cols)
 		while (map_vals[i][row_len])
 			row_len++;
 		if (row_len != cols)
-			ft_fail_map(data, map_vals, "Invalid map: non-rectangular rows");
+			return (-1);
 		i++;
 	}
+	return (0);
 }
 
-static void	char_arr_len(char ***map_vals, t_data *data)
+static int	char_arr_len(char ***map_vals, unsigned int *out)
 {
 	int	i;
 	int	j;
 
 	if (!map_vals || !map_vals[0] || !map_vals[0][0])
-		ft_fail_map(data, map_vals, "Invalid map: empty or malformed");
+		return (-1);
 	i = 0;
 	j = 0;
 	while (map_vals[i])
 		i++;
 	while (map_vals[0][j])
 		j++;
-	if (j <= 0)
-		ft_fail_map(data, map_vals, "Invalid map: empty first row");
-	check_rows(map_vals, data, j);
-	data->size = i * j;
-	data->r = i;
-	data->c = j;
+	if (j <= 0 || check_rows(map_vals, j) < 0)
+		return (-1);
+	out[0] = (unsigned int)(i * j);
+	out[1] = (unsigned int)i;
+	out[2] = (unsigned int)j;
+	return (0);
 }
 
-void	ft_get_coords(char ***map_vals, t_data *data)
+static int	ft_store_points(char ***map_vals, t_coords *pts)
 {
 	unsigned int	i;
 	unsigned int	j;
 	unsigned int	count;
 
-	char_arr_len(map_vals, data);
 	count = 0;
-	data->todi = (t_coords *)malloc(sizeof(t_coords) * (data->size));
 	i = 0;
 	while (map_vals[i])
 	{
@@ -66,19 +65,44 @@ void	ft_get_coords(char ***map_vals, t_data *data)
 		while (map_vals[i][j])
 		{
 			if (!ft_valid_token(map_vals[i][j]))
-				ft_fail_map(data, map_vals, "Invalid map: bad height token");
-			data->todi[count].x = (double)j;
-			data->todi[count].y = (double)i;
-			data->todi[count].z = (double)ft_atoi(map_vals[i][j]);
+				return (-1);
+			pts[count].x = (double)j;
+			pts[count].y = (double)i;
+			pts[count].z = (double)ft_atoi(map_vals[i][j]);
 			j++;
 			count++;
 		}
 		i++;
 	}
-	ft_free_char3(map_vals);
+	return (0);
 }
 
-void	ft_get_map(char *map_path, t_data *data)
+static int	ft_fill_coords(char ***map_vals, t_data *data)
+{
+	unsigned int	out[3];
+	t_coords		*pts;
+
+	if (char_arr_len(map_vals, out) < 0)
+	{
+		ft_free_char3(map_vals);
+		return (-1);
+	}
+	pts = (t_coords *)malloc(sizeof(t_coords) * out[0]);
+	if (!pts || ft_store_points(map_vals, pts) < 0)
+	{
+		free(pts);
+		ft_free_char3(map_vals);
+		return (-1);
+	}
+	ft_free_char3(map_vals);
+	data->todi = pts;
+	data->size = out[0];
+	data->r = out[1];
+	data->c = out[2];
+	return (0);
+}
+
+int	ft_load_map_coords(t_data *data, char *map_path)
 {
 	int		map_fd;
 	char	**map_lines;
@@ -86,21 +110,13 @@ void	ft_get_map(char *map_path, t_data *data)
 
 	map_fd = open(map_path, O_RDONLY);
 	if (map_fd < 0)
-	{
-		perror("Error opening file\n");
-		if (errno == ENOENT)
-			ft_printf("File does not exist:%s\n", map_path);
-		else if (errno == EACCES)
-			ft_printf("Change access permissions for file: %s\n", map_path);
-		close_win(data, 1);
-		exit(EXIT_FAILURE);
-	}
+		return (-1);
 	map_lines = ft_get_map_lines(map_fd);
 	close(map_fd);
 	if (!map_lines)
-		ft_fail_map(data, NULL, "Invalid map: empty file or read failure");
+		return (-1);
 	map_vals = ft_mapline_tostr(map_lines);
 	if (!map_vals)
-		ft_fail_map(data, NULL, "Invalid map: allocation failure");
-	ft_get_coords(map_vals, data);
+		return (-1);
+	return (ft_fill_coords(map_vals, data));
 }

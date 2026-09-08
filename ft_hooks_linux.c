@@ -17,6 +17,8 @@ int	mouse_hook_linux(int button, int x, int y, void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
+	if (data->cmd_mode)
+		return (0);
 	if (button == 4)
 		ft_zoom_at(data, x, y, FDF_ZOOM_WHEEL);
 	else if (button == 5)

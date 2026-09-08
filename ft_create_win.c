@@ -6,7 +6,7 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 00:08:14 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 17:00:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 int	close_win(t_data *data, int i)
 {
+	ft_free_runtime(data);
 	ft_destroy_mlx(data);
 	if (i == 0)
-	{
-		free(data->todi);
-		free(data->tredi);
 		exit(EXIT_SUCCESS);
-	}
 	exit(EXIT_FAILURE);
 }
 

@@ -69,4 +69,6 @@ void	ft_redraw(t_data *data)
 	ft_clear_img(data);
 	ft_placelines(data);
 	ft_put_img(data);
+	if (data->cmd_mode)
+		ft_draw_hud(data);
 }

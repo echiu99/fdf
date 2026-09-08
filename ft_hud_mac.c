@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_color.c                                         :+:      :+:    :+:   */
+/*   ft_hud_mac.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/27 17:10:00 by echiu             #+#    #+#             */
+/*   Created: 2026/03/27 18:00:00 by echiu             #+#    #+#             */
 /*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	fdf_color_height(t_data *data, double z)
+void	ft_hud_clear(t_data *data)
 {
-	double	t;
-	int		r;
-	int		g;
-	int		b;
+	if (data->hud_img)
+	{
+		mlx_delete_image((mlx_t *)data->mlx_ptr, (mlx_image_t *)data->hud_img);
+		data->hud_img = NULL;
+	}
+}
 
-	t = (z - data->z_min) / (data->z_max - data->z_min);
-	if (t < 0.0)
-		t = 0.0;
-	if (t > 1.0)
-		t = 1.0;
-	r = (int)(data->grad_r0 + t * (data->grad_r1 - data->grad_r0));
-	g = (int)(data->grad_g0 + t * (data->grad_g1 - data->grad_g0));
-	b = (int)(data->grad_b0 + t * (data->grad_b1 - data->grad_b0));
-	return (fdf_pack_rgb(r, g, b));
+void	ft_draw_hud(t_data *data)
+{
+	char	line[FDF_CMD_MAX + 2];
+
+	ft_hud_clear(data);
+	if (!data->cmd_mode)
+		return ;
+	line[0] = ':';
+	ft_strlcpy(line + 1, data->cmd_buf, FDF_CMD_MAX + 1);
+	data->hud_img = mlx_put_string((mlx_t *)data->mlx_ptr, line, 12,
+			data->h - 36);
 }

@@ -6,7 +6,7 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 16:50:00 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 16:50:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,23 @@
 
 void	read_keys_mac(mlx_key_data_t keydata, void *param)
 {
-	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
-		read_keys((int)keydata.key, (t_data *)param);
+	t_data	*data;
+	int		key;
+	int		shift;
+
+	if (keydata.action != MLX_PRESS && keydata.action != MLX_REPEAT)
+		return ;
+	data = (t_data *)param;
+	key = (int)keydata.key;
+	shift = (keydata.modifier & MLX_SHIFT) != 0;
+	if (data->cmd_mode)
+	{
+		ft_cmd_key(data, key, shift);
+		return ;
+	}
+	if (key == MLX_KEY_SEMICOLON && shift)
+		key = 58;
+	read_keys(key, data);
 }
 
 void	close_event_mac(void *param)
@@ -32,7 +47,7 @@ void	scroll_hook_mac(double xdelta, double ydelta, void *param)
 
 	(void)xdelta;
 	data = (t_data *)param;
-	if (ydelta == 0.0)
+	if (data->cmd_mode || ydelta == 0.0)
 		return ;
 	mlx_get_mouse_pos((mlx_t *)data->mlx_ptr, &mx, &my);
 	if (ydelta > 0.0)

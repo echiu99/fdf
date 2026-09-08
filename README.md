@@ -11,6 +11,8 @@ A 3D wireframe renderer in C: it reads `.fdf` height maps, projects them in isom
 - **Cross-platform build**: Linux uses **MiniLibX** (`mlx_linux`); macOS uses **MLX42** (`mlx_macos`) with GLFW.
 - **Rotation**: horizontal (yaw) and vertical (pitch) from original map coords.
 - **Reset view** (`R`) plus zoom clamps so the model stays usable while testing.
+- **Vim-style map switch** (`:` / `o`): type a name from `maps/`, Tab-complete, Enter to load without restarting.
+- **Color schemes** (`C`): cycle height-gradient palettes.
 - Map validation: rectangular grids, sensible error messages on bad input.
 - Full-frame clear before first draw so the background is solid (no grey “empty” pixels on macOS).
 
@@ -65,7 +67,11 @@ Each row is a line of space-separated values; row length must be consistent. The
 | **↑** / **↓** | Zoom in / out around the **center** of the window (×2 / ÷2). |
 | **Mouse wheel** | Zoom in / out toward the **cursor** (~1.1× per notch; clamped). On Linux: wheel buttons **4** / **5**. |
 | **R** | Reset view (angles, zoom, and position). |
-| **Escape** | Quit. |
+| **C** | Cycle color scheme (purple-blue → white → green-cyan → red-gold → grey-white). |
+| **:** or **o** | Open command line (vim-style). Type a map stem (`mars`, `42`, …) or `e` to reload; names resolve under `maps/`. |
+| **Tab** (in command mode) | Complete / list matching `.fdf` files in `maps/`. |
+| **Enter** (in command mode) | Load the map and reset the view. |
+| **Escape** | Cancel command mode, or quit if not in command mode. |
 | **Window close** | Quit. |
 
 ## Technical notes
@@ -77,7 +83,7 @@ Each row is a line of space-separated values; row length must be consistent. The
 ## Future ideas
 
 - Mouse-drag rotation.
-- Other projections, optional flat shading, reload map without restart.
+- Other projections, optional flat shading.
 
 ## Context
 

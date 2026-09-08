@@ -6,7 +6,7 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 17:09:56 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 16:30:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@
 # define FDF_GRAD_R1 0x1E
 # define FDF_GRAD_G1 0x90
 # define FDF_GRAD_B1 0xFF
+# define FDF_CMD_MAX 256
+# define FDF_MAPS_DIR "maps/"
+# define FDF_MAX_MAPS 64
+# define FDF_SCHEME_COUNT 5
 
 typedef struct s_coords
 {
@@ -100,7 +104,21 @@ typedef struct s_data
 	void			*mlx_ptr;
 	void			*win_ptr;
 	void			*img_ptr;
+	void			*hud_img;
 	char			*addr;
+	char			*map_path;
+	char			**map_names;
+	char			cmd_buf[FDF_CMD_MAX];
+	int				map_count;
+	int				cmd_len;
+	int				cmd_mode;
+	int				color_scheme;
+	int				grad_r0;
+	int				grad_g0;
+	int				grad_b0;
+	int				grad_r1;
+	int				grad_g1;
+	int				grad_b1;
 	int				h;
 	int				w;
 	int				x;
@@ -140,7 +158,7 @@ void	ft_free_char2(char **tofree);
 void	translate_right(t_data *data);
 void	ft_free_char3(char ***tofree);
 void	ft_putline(t_data *data, int i, int j);
-void	ft_get_map(char *map_path, t_data *data);
+int		ft_load_map_coords(t_data *data, char *map_path);
 void	ft_fail_map(t_data *data, char ***map_vals, char *msg);
 int		ft_valid_token(char *str);
 char	**ft_get_map_lines(int map_fd);
@@ -165,6 +183,22 @@ int		close_event(t_data *data);
 int		ft_strslen(char **map_lines);
 int		close_win(t_data *data, int i);
 int		read_keys(int keysym, t_data *data);
+void	ft_scheme_apply(t_data *data, int id);
+void	ft_scheme_cycle(t_data *data);
+void	ft_maps_scan(t_data *data);
+void	ft_maps_free(t_data *data);
+void	ft_cmd_open(t_data *data);
+void	ft_cmd_cancel(t_data *data);
+void	ft_cmd_append(t_data *data, char c);
+void	ft_cmd_backspace(t_data *data);
+int		ft_cmd_key(t_data *data, int key, int shift);
+void	ft_cmd_exec(t_data *data);
+void	ft_cmd_complete(t_data *data);
+char	*ft_resolve_map_arg(char *arg);
+int		ft_switch_map(t_data *data, char *path);
+void	ft_hud_clear(t_data *data);
+void	ft_draw_hud(t_data *data);
+void	ft_free_runtime(t_data *data);
 
 # ifdef __APPLE__
 

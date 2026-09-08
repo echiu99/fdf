@@ -12,12 +12,14 @@ MLX_INC = -I$(LIBMLX_D)/include
 LFLAGS = $(LIBMLX_D)/build/libmlx42.a \
 	-L/opt/homebrew/lib -L/usr/local/lib -lglfw \
 	-framework Cocoa -framework OpenGL -framework IOKit -lm
-PLATFORM_SRC = ft_hooks_mac.c ft_setup_mac.c ft_win_mac.c ft_pixel_mac.c
+PLATFORM_SRC = ft_hooks_mac.c ft_setup_mac.c ft_win_mac.c ft_pixel_mac.c \
+	ft_hud_mac.c ft_cmd_key_mac.c
 else
 LIBMLX_D = ../mlx_linux
 MLX_INC = -I$(LIBMLX_D)
 LFLAGS = -L$(LIBMLX_D) -lmlx -lbsd -lXext -lX11 -lm -lz
-PLATFORM_SRC = ft_hooks_linux.c ft_setup_linux.c ft_win_linux.c ft_pixel_linux.c
+PLATFORM_SRC = ft_hooks_linux.c ft_setup_linux.c ft_win_linux.c ft_pixel_linux.c \
+	ft_hud_linux.c ft_cmd_key_linux.c
 endif
 
 SRC = fdf_utils.c \
@@ -26,6 +28,12 @@ SRC = fdf_utils.c \
       ft_get_vals.c \
       ft_map_valid.c \
       ft_map_read.c \
+      ft_map_switch.c \
+      ft_maps_dir.c \
+      ft_cmd.c \
+      ft_cmd_run.c \
+      ft_init_map.c \
+      ft_scheme.c \
       ft_clear.c \
       ft_color.c \
       ft_plot.c \

@@ -6,7 +6,7 @@
 /*   By: echiu <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 18:34:49 by echiu             #+#    #+#             */
-/*   Updated: 2026/03/27 16:55:00 by echiu            ###   ########.fr       */
+/*   Updated: 2026/03/27 18:00:00 by echiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 # define KEY_Q MLX_KEY_Q
 # define KEY_E MLX_KEY_E
 # define KEY_R MLX_KEY_R
+# define KEY_O MLX_KEY_O
+# define KEY_C MLX_KEY_C
+# define KEY_COLON 58
 #else
 # define KEY_ESC XK_Escape
 # define KEY_UP 65362
@@ -38,13 +41,14 @@
 # define KEY_Q 113
 # define KEY_E 101
 # define KEY_R 114
+# define KEY_O 111
+# define KEY_C 99
+# define KEY_COLON XK_colon
 #endif
 
-int	read_keys(int keysym, t_data *data)
+static void	ft_view_keys(int keysym, t_data *data)
 {
-	if (keysym == KEY_ESC)
-		close_win(data, 0);
-	else if (keysym == KEY_DOWN)
+	if (keysym == KEY_DOWN)
 		scale_down(data);
 	else if (keysym == KEY_UP)
 		scale_up(data);
@@ -66,23 +70,21 @@ int	read_keys(int keysym, t_data *data)
 		translate_up(data);
 	else if (keysym == KEY_S)
 		translate_down(data);
-	return (0);
 }
 
-void	init_mapdata(t_data *data, char *map_path)
+int	read_keys(int keysym, t_data *data)
 {
-	data->size = 0;
-	data->r = 0;
-	data->c = 0;
-	ft_get_map(map_path, data);
-	ft_compute_z_range(data);
-	ft_alloc_view(data);
-	data->angle_x = 0.0;
-	data->angle_y = 0.0;
-	data->scale = FDF_DEFAULT_SCALE;
-	data->off_x = (double)data->w / 2.0;
-	data->off_y = (double)data->h / 4.0;
-	ft_rebuild_view(data);
+	if (data->cmd_mode)
+		return (ft_cmd_key(data, keysym, 0));
+	if (keysym == KEY_ESC)
+		close_win(data, 0);
+	else if (keysym == KEY_COLON || keysym == KEY_O)
+		ft_cmd_open(data);
+	else if (keysym == KEY_C)
+		ft_scheme_cycle(data);
+	else
+		ft_view_keys(keysym, data);
+	return (0);
 }
 
 int	main(int argc, char **argv)
